@@ -5,6 +5,7 @@
 name: Coverity Scan
 
 on:
+  workflow_dispatch:
   push:
     branches: [master]
 
