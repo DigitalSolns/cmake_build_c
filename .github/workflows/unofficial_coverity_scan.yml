@@ -1,0 +1,37 @@
+name: example-basic
+# This workflow represents a set of basic End-to-End tests
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  basic-ubuntu-20:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Unofficial Coverity Scan
+        # You may pin to the exact commit or the version.
+        # uses: vapier/coverity-scan-action@cae3c096a2eb21c431961a49375ac17aea2670ce
+        uses: vapier/coverity-scan-action@v1
+        with:
+          # Project name in Coverity Scan.
+          project: ${{ github.repository }}
+          #Secret project token for accessing Coverity Scan.
+          token: ${{ secrets.COVERITY_SCAN_TOKEN }}
+            # Where Coverity Scan should send notifications.
+          email: ${{ secrets.COVERITY_SCAN_EMAIL }}
+          # Which Coverity Scan language pack to download.
+          build_language: cxx
+          # Which Coverity Scan platform pack to download.
+          build_platform: linux64
+          # Command to pass to cov-build.
+          command: make
+          # Working directory to set for all steps.
+          working-directory: ${{ github.workspace }}
+          # (Informational) The source version being built.
+          version: ${{ github.sha }}
+          # (Informational) A description for this particular build.
+          description: ${{ github.repository }} / ${{ github.ref }}
