@@ -30,6 +30,12 @@ jobs:
         cov-build --dir cov-int make
         tar czvf coverity-scan.tgz cov-int
         echo "Coverity Scan complete."
+        
+    - name: Coverity Quality Gate
+      if: ${{ github.event_name != 'pull_request' }}
+      run: |
+        curl -fLsS --user $COV_USER:$COVERITY_PASSPHRASE $COV_URL/api/viewContents/issues/v1/OWASP%20Web%20Top%2010?projectId=$COVERITY_PROJECT > results.json
+        if [ $(cat results.json | jq .viewContentsV1.totalRows) -ne 0 ]; then cat results.json | jq .viewContentsV1.rows; exit 1; fi
 
     - name: Upload Scan Results
       uses: actions/upload-artifact@v2
